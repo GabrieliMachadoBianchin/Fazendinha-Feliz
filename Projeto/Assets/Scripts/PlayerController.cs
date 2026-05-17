@@ -2,56 +2,58 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 10f;
+    [Header("Movimento")]
+    public float speed = 8f;
     public float gravity = -20f;
-    public float rotationSpeed = 10f;
+
+    [Header("Rotação")]
+    public float rotationSpeed = 360f;
 
     private CharacterController controller;
     private Vector3 velocity;
 
+    [Header("Animator")]
     private Animator animator;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        if (animator != null)
+        {
+            animator.applyRootMotion = false;
+        }
     }
 
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-/*
+        // INPUT
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        // DIREÇÃO
         Vector3 move = new Vector3(h, 0f, v);
 
-        // Move no espaço do mundo
-        controller.Move(move * speed * Time.deltaTime);
-*/
+        // Corrige diagonal
+        move = Vector3.ClampMagnitude(move, 1f);
 
-        Vector3 move = transform.forward * v + transform.right * h;
-
-        //move = Vector3.ClampMagnitude(move, 1f);
-
+        // MOVIMENTO
         controller.Move(move * speed * Time.deltaTime);
 
-        // Rotaciona
-        /*
-        if (move != Vector3.zero)
-        {
-            transform.forward = move;
-        }*/
-        if (move != Vector3.zero)
+        // ROTAÇÃO SUAVE
+        if (move.magnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(move);
 
-            transform.rotation = Quaternion.Slerp(
+            transform.rotation = Quaternion.RotateTowards(
                 transform.rotation,
                 targetRotation,
                 rotationSpeed * Time.deltaTime
             );
         }
 
-        // Gravidade
+        // GRAVIDADE
         if (controller.isGrounded)
         {
             velocity.y = -2f;
@@ -63,9 +65,12 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
 
-        // Animator
-        animator.SetFloat("Hor", h);
-        animator.SetFloat("Vert", v);
-        animator.SetBool("IsJump", !controller.isGrounded);
+        // ANIMATOR
+        if (animator != null)
+        {
+            animator.SetFloat("Hor", h);
+            animator.SetFloat("Vert", v);
+            animator.SetBool("IsJump", !controller.isGrounded);
+        }
     }
 }
