@@ -10,7 +10,6 @@ public class CoinManager : MonoBehaviour
     void Start()
     {
         AddCoins(100);
-        UpdateUI();
     }
 
     public void AddCoins(int amount)
@@ -20,6 +19,24 @@ public class CoinManager : MonoBehaviour
         UpdateUI();
 
         Debug.Log("Moedas: " + coins);
+    }
+
+    public bool RemoveCoins(int amount)
+    {
+        if (coins >= amount)
+        {
+            coins -= amount;
+
+            UpdateUI();
+
+            Debug.Log("Moedas: " + coins);
+
+            return true;
+        }
+
+        Debug.Log("Moedas insuficientes.");
+
+        return false;
     }
 
     void UpdateUI()
