@@ -8,6 +8,12 @@ public class FarmTile : MonoBehaviour
 
     public Transform plantPoint;
 
+    public string plantName = "Milho";
+
+    public ArmazemController armazem;
+
+    public LevelSystem levelSystem;
+
     public void PlantSeed(GameObject seedPrefab)
     {
         if (hasPlant) return;
@@ -19,6 +25,8 @@ public class FarmTile : MonoBehaviour
         );
 
         hasPlant = true;
+
+        levelSystem.AddXP(10);
     }
 
     public void HarvestPlant()
@@ -32,6 +40,10 @@ public class FarmTile : MonoBehaviour
             Destroy(currentPlant);
 
             hasPlant = false;
+
+            armazem.AdicionarItem(plantName, 1);
+
+            levelSystem.AddXP(20);
 
             Debug.Log("Planta colhida!");
         }
