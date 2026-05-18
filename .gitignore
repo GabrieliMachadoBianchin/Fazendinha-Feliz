@@ -11,6 +11,7 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 /[Pp]rojeto/[Aa]ssets/[Pp]olytope Studio
+/[Pp]rojeto/[Aa]ssets/[Pp]olytope Studio.meta
 *.log
 
 # By default unity supports Blender asset imports, *.blend1 blender files do not need to be commited to version control.
@@ -60,6 +61,7 @@ ExportedObj/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
+*
 
 # Unity3D generated file on crash reports
 sysinfo.txt
