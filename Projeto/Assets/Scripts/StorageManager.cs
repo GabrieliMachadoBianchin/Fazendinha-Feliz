@@ -1,19 +1,17 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
+/// Armazém do jogador. Guarda apenas cenouras.
 public class StorageManager : MonoBehaviour
 {
     public static StorageManager Instance;
 
+    [Header("UI")]
     public GameObject storageUI;
-    public Transform content;
-    public GameObject itemRowTemplate;
-    public Button closeButton;
+    public TextMeshProUGUI carrotCountText;
+    public UnityEngine.UI.Button closeButton;
 
-    public List<ItemData> itemDatabase = new List<ItemData>();
-    private Dictionary<string, int> inventory = new Dictionary<string, int>();
-
+    private int carrots = 0;
     private bool isOpen = false;
 
     void Awake()
@@ -23,233 +21,67 @@ public class StorageManager : MonoBehaviour
 
     void Start()
     {
+        // Debug.Log("[StorageManager] Start() rodou! carrots=" + carrots, gameObject);
         if (closeButton != null)
-        {
             closeButton.onClick.AddListener(CloseStorage);
-        }
 
+        
         storageUI.SetActive(false);
-        isOpen = false;
+        // NÃO chama UpdateUI aqui — o painel está inativo e o texto não atualiza
     }
 
     public void OpenStorage()
     {
         if (isOpen) return;
-
         isOpen = true;
-        storageUI.SetActive(true);
-        RefreshUI();
+        storageUI.SetActive(true); // ativa o painel PRIMEIRO
+        UpdateUI();                // agora o QtCenouras está ativo, texto atualiza
     }
 
     public void CloseStorage()
     {
-        if (!isOpen) return;
-
         isOpen = false;
         storageUI.SetActive(false);
     }
 
-    public bool IsOpen()
+    public bool IsOpen() => isOpen;
+
+    public void AddCarrots(int amount)
     {
-        return isOpen;
+        carrots += amount;
+        // Debug.Log($"[Armazém] +{amount} cenoura(s). Total: {carrots}");
+        // só atualiza o texto se o painel estiver aberto
+        // if (isOpen) UpdateUI();
+        UpdateUI();
     }
 
-    public void AddItem(string itemName, int amount)
+    public bool RemoveCarrots(int amount)
     {
-        if (inventory.ContainsKey(itemName))
+        if (carrots < amount)
         {
-            inventory[itemName] += amount;
+            // Debug.LogWarning($"[Armazém] Cenouras insuficientes. Tem {carrots}, precisa de {amount}.");
+            return false;
         }
-        else
-        {
-            inventory.Add(itemName, amount);
-        }
-
-        RefreshUI();
+        carrots -= amount;
+        // Debug.Log($"[Armazém] -{amount} cenoura(s). Total: {carrots}");
+        // if (isOpen) UpdateUI();
+        UpdateUI();
+        return true;
     }
 
-    public void RemoveItem(string itemName, int amount)
-    {
-        if (inventory.ContainsKey(itemName))
-        {
-            inventory[itemName] -= amount;
+    public int GetCarrots() => carrots;
 
-            if (inventory[itemName] < 0)
-            {
-                inventory[itemName] = 0;
-            }
-        }
-
-        RefreshUI();
-    }
-
-    public int GetQuantity(string itemName)
-    {
-        if (inventory.ContainsKey(itemName))
-        {
-            return inventory[itemName];
-        }
-        return 0;
-    }
-
-    public void RefreshUI()
-    {
-        foreach (Transform child in content)
-        {
-            if (child.gameObject == itemRowTemplate) continue;
-            Destroy(child.gameObject);
-        }
-
-        foreach (ItemData item in itemDatabase)
-        {
-            int quantity = GetQuantity(item.itemName);
-
-            GameObject row = Instantiate(itemRowTemplate, content);
-            row.SetActive(true);
-
-            ItemRowUI ui = row.GetComponent<ItemRowUI>();
-            ui.Setup(item, quantity);
-        }
-    }
-
-    public void SellItem(ItemData item)
-    {
-        if (GetQuantity(item.itemName) > 0)
-        {
-            RemoveItem(item.itemName, 1);
-            Debug.Log("Vendeu: " + item.itemName);
-        }
-    }
-
-    public void UseItem(ItemData item)
-    {
-        if (GetQuantity(item.itemName) > 0)
-        {
-            RemoveItem(item.itemName, 1);
-            Debug.Log("Usou: " + item.itemName);
-        }
-    }
+    void UpdateUI()
+{
+    // Debug.Log("[UI] UpdateUI chamado. carrots=" + carrots + " | texto null? " + (carrotCountText == null));
+    if (carrotCountText != null)
+        carrotCountText.text = "Cenoura x " + carrots;
 }
 
-/*using System.Collections.Generic;
-using UnityEngine;
-
-public class StorageManager : MonoBehaviour
-{
-    public static StorageManager Instance;
-
-    public GameObject storageUI;
-
-    public Transform content;
-
-    public GameObject itemRowTemplate;
-
-    public List<ItemData> itemDatabase = new List<ItemData>();
-
-    private Dictionary<string, int> inventory =
-        new Dictionary<string, int>();
-
-    private bool isOpen = false;
-
-    public bool IsOpen()
-{
-    return isOpen;
-}
-
-public void OpenStorage()
-{
-    isOpen = true;
-
-    storageUI.SetActive(true);
-
-    RefreshUI();
-}
-
-public void CloseStorage()
-{
-    isOpen = false;
-
-    storageUI.SetActive(false);
-}
-    void Awake()
+/*
+    void UpdateUI()
     {
-        Instance = this;
-    }
-
-public void ToggleStorage()
-{
-    isOpen = !isOpen;
-
-    storageUI.SetActive(isOpen);
-
-    Debug.Log("Storage aberto? " + isOpen);
+        if (carrotCountText != null)
+            carrotCountText.text = "Cenoura x" + carrots;
+    }*/
 }
-    void Start()
-{
-    storageUI.SetActive(false);
-
-    RefreshUI();
-}
-    public void AddItem(string itemName, int amount)
-    {
-        if (inventory.ContainsKey(itemName))
-        {
-            inventory[itemName] += amount;
-        }
-        else
-        {
-            inventory.Add(itemName, amount);
-        }
-
-        RefreshUI();
-    }
-
-    public void RemoveItem(string itemName, int amount)
-    {
-        if (inventory.ContainsKey(itemName))
-        {
-            inventory[itemName] -= amount;
-
-            if (inventory[itemName] <= 0)
-            {
-                inventory.Remove(itemName);
-            }
-        }
-
-        RefreshUI();
-    }
-
-    public int GetQuantity(string itemName)
-    {
-        if (inventory.ContainsKey(itemName))
-        {
-            return inventory[itemName];
-        }
-
-        return 0;
-    }
-
-    public void RefreshUI()
-    {
-        foreach (Transform child in content)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (ItemData item in itemDatabase)
-        {
-            int quantity = GetQuantity(item.itemName);
-
-            if (quantity > 0)
-            {
-                GameObject row =
-                    Instantiate(itemRowTemplate, content);
-
-                ItemRowUI ui =
-                    row.GetComponent<ItemRowUI>();
-
-                ui.Setup(item, quantity);
-            }
-        }
-    }
-}*/

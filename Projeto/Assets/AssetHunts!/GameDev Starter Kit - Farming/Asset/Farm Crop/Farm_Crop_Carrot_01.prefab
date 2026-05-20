@@ -81,5 +81,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44140f905375cb44bbbd04ba8646df9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Plant
-  growTime: 10
+  growTime: 20
+  harvestAmount: 2
   readyToHarvest: 0
