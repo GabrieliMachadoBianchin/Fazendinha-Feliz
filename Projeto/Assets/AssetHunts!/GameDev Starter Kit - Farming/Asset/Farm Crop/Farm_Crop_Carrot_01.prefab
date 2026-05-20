@@ -49,7 +49,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: e0d136a1dd3e95d4fae769134e3c5536, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: fa6c45465cde56c4495f6d9109c80326, type: 2}
     - target: {fileID: 919132149155446097, guid: e0d136a1dd3e95d4fae769134e3c5536, type: 3}
@@ -59,5 +59,27 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e0d136a1dd3e95d4fae769134e3c5536, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1040303490329182159}
   m_SourcePrefab: {fileID: 100100000, guid: e0d136a1dd3e95d4fae769134e3c5536, type: 3}
+--- !u!1 &1354996048308653523 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e0d136a1dd3e95d4fae769134e3c5536, type: 3}
+  m_PrefabInstance: {fileID: 2165246722059792514}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1040303490329182159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1354996048308653523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44140f905375cb44bbbd04ba8646df9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Plant
+  growTime: 10
+  readyToHarvest: 0
